@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z3Connect Article to Audio Converter</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .spin-animation {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(75, 85, 99, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(75, 85, 99, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(75, 85, 99, 0); }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Audio player styling */
+        audio::-webkit-media-controls-panel {
+            background-color: #1a1a1a;
+        }
+        
+        audio::-webkit-media-controls-play-button {
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
+        
+        audio::-webkit-media-controls-timeline {
+            background-color: #333333;
+            border-radius: 25px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex flex-col">
+    <!-- Header Section -->
+    <header class="bg-black text-white py-8 shadow-xl">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold text-center tracking-tight">Z3Connect</h1>
+            <p class="text-center text-gray-300 mt-3 font-light tracking-wide">ARTICLE TO AUDIO CONVERTER</p>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-12 flex flex-col md:flex-row gap-8">
+        <!-- Left Column - Tool -->
+        <div class="bg-white rounded-xl shadow-2xl p-8 md:w-2/3 fade-in border border-gray-100">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">Convert Article to Audio</h2>
+                <p class="text-gray-600">Transform any web article into premium quality narration</p>
+            </div>
+            
+            <div class="relative mb-8">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-link text-gray-400"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="articleUrl" 
+                    placeholder="https://example.com/article" 
+                    class="block w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-gray-800 transition duration-200"
+                >
+            </div>
+            
+            <button 
+                id="convertBtn" 
+                onclick="convertArticle()"
+                class="w-full bg-black hover:bg-gray-800 text-white font-medium py-4 px-6 rounded-lg transition duration-200 flex items-center justify-center pulse-animation"
+            >
+                <span id="spinner" class="hidden mr-3">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+                <i class="fas fa-headphones mr-3"></i>
+                <span class="tracking-wide">CONVERT TO AUDIO</span>
+            </button>
+            
+            <!-- Status Messages -->
+            <div id="message" class="hidden mt-6 p-5 rounded-lg border-l-4"></div>
+            
+            <!-- Audio Player Section -->
+            <div id="audioContainer" class="hidden mt-8 pt-8 border-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-check-circle text-gray-800 mr-2"></i>
+                    Your Audio is Ready
+                </h3>
+                <div class="bg-gray-50 p-5 rounded-lg mb-5">
+                    <audio id="audioPlayer" controls class="w-full mb-5 rounded-lg"></audio>
+                    <a id="downloadLink" class="flex items-center justify-center bg-gray-900 hover:bg-black text-white font-medium py-4 px-6 rounded-lg transition duration-200" download="article_audio.mp3">
+                        <i class="fas fa-download mr-3"></i>
+                        <span class="tracking-wide">DOWNLOAD AUDIO</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column - Instructions -->
+        <div class="bg-white rounded-xl shadow-2xl p-8 md:w-1/3 fade-in border border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-info-circle mr-2 text-gray-700"></i>
+                How It Works
+            </h2>
+            
+            <div class="space-y-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-gray-100 rounded-full p-2 mr-4">
+                        <span class="flex items-center justify-center h-7 w-7 rounded-full bg-black text-white font-bold text-sm">1</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900">Find an Article</h3>
+                        <p class="text-gray-600 text-sm mt-1">Copy the URL of any news article, blog post, or web page you want to listen to.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-gray-100 rounded-full p-2 mr-4">
+                        <span class="flex items-center justify-center h-7 w-7 rounded-full bg-black text-white font-bold text-sm">2</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900">Paste and Convert</h3>
+                        <p class="text-gray-600 text-sm mt-1">Paste the URL in the input field and click the "Convert to Audio" button.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-gray-100 rounded-full p-2 mr-4">
+                        <span class="flex items-center justify-center h-7 w-7 rounded-full bg-black text-white font-bold text-sm">3</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900">Listen or Download</h3>
+                        <p class="text-gray-600 text-sm mt-1">Play the audio directly in your browser or download it for later listening.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-5 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 class="font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-lightbulb text-gray-700 mr-2"></i>
+                    Premium Features
+                </h3>
+                <ul class="mt-3 text-sm text-gray-600 space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-gray-800 mt-1 mr-2"></i>
+                        <span>High-quality natural voice narration</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-gray-800 mt-1 mr-2"></i>
+                        <span>Smart content extraction from any website</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-gray-800 mt-1 mr-2"></i>
+                        <span>Fast processing with AI-powered technology</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-center md:text-left text-gray-400">
+                    &copy; 2025 Z3Connect | Premium Audio Solutions
+                </p>
+                <div class="mt-4 md:mt-0 flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-white transition duration-200">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition duration-200">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition duration-200">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // DOM elements
+        const articleUrl = document.getElementById('articleUrl');
+        const convertBtn = document.getElementById('convertBtn');
+        const spinner = document.getElementById('spinner');
+        const messageElement = document.getElementById('message');
+        const audioContainer = document.getElementById('audioContainer');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const downloadLink = document.getElementById('downloadLink');
+        
+        // Function to validate URL
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Show message with appropriate styling
+        function showMessage(text, type) {
+            messageElement.textContent = text;
+            messageElement.className = `mt-6 p-5 rounded-lg border-l-4 fade-in ${
+                type === 'error' 
+                ? 'bg-red-50 text-red-800 border-red-500' 
+                : type === 'success'
+                ? 'bg-gray-50 text-gray-800 border-gray-800'
+                : 'bg-gray-50 text-gray-800 border-gray-500'
+            }`;
+            messageElement.classList.remove('hidden');
+        }
+        
+        // Set loading state
+        function setLoading(isLoading) {
+            if (isLoading) {
+                convertBtn.disabled = true;
+                convertBtn.classList.remove('pulse-animation');
+                spinner.classList.remove('hidden');
+                convertBtn.classList.add('bg-gray-700');
+                convertBtn.classList.remove('hover:bg-gray-800');
+            } else {
+                convertBtn.disabled = false;
+                convertBtn.classList.add('pulse-animation');
+                spinner.classList.add('hidden');
+                convertBtn.classList.remove('bg-gray-700');
+                convertBtn.classList.add('hover:bg-gray-800');
+                convertBtn.classList.add('bg-black');
+            }
+        }
+        
+        // Main function to convert article
+        async function convertArticle() {
+            const url = articleUrl.value.trim();
+            
+            // Reset UI
+            audioContainer.classList.add('hidden');
+            
+            // Validate input
+            if (!url) {
+                showMessage('Please enter an article URL', 'error');
+                articleUrl.focus();
+                return;
+            }
+            
+            if (!isValidUrl(url)) {
+                showMessage('Please enter a valid URL (e.g., https://example.com/article)', 'error');
+                articleUrl.focus();
+                return;
+            }
+            
+            // Set loading state
+            setLoading(true);
+            showMessage('Processing your article. This may take up to a minute...', 'info');
+            
+            try {
+                const response = await fetch("https://santhoshsharuk-web-article-reader-api.hf.space/convert/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                // Reset loading state
+                setLoading(false);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.detail || 'Failed to process article'}`, 'error');
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                // Show success message
+                showMessage('Audio generated successfully! You can now play or download it.', 'success');
+                
+                // Setup audio player and download link
+                audioPlayer.src = "https://santhoshsharuk-web-article-reader-api.hf.space/download/";
+                downloadLink.href = "https://santhoshsharuk-web-article-reader-api.hf.space/download/";
+                
+                // Show audio container with animation
+                audioContainer.classList.remove('hidden');
+                audioContainer.classList.add('fade-in');
+                
+                // Add title to audio if available in response
+                if (data.title) {
+                    downloadLink.download = `${data.title.replace(/[^\w\s]/gi, '')}.mp3`;
+                } else {
+                    downloadLink.download = "article_audio.mp3";
+                }
+                
+            } catch (error) {
+                setLoading(false);
+                showMessage('Connection error. Please check your internet connection and try again.', 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Event listener for Enter key in URL input
+        articleUrl.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertArticle();
+            }
+        });
+        
+        // Focus the URL input on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            articleUrl.focus();
+            
+            // Add subtle hover effect to cards
+            document.querySelectorAll('.bg-white').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.transition = 'transform 0.3s ease';
+                    this.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

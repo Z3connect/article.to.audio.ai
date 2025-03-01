@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z3Connect - Article to Audio AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #f8f8f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 2.5rem;
+        }
+        
+        .logo svg {
+            width: 200px;
+            height: auto;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #ffffff;
+        }
+        
+        p.tagline {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .feature {
+            background-color: rgba(25, 25, 25, 0.8);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            width: 300px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-icon {
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        
+        .feature h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        .feature p {
+            color: #a0a0a0;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .cta {
+            background: #ffffff;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem 2.5rem;
+            border-radius: 0.25rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta:hover::before {
+            left: 100%;
+        }
+        
+        .design-element {
+            position: absolute;
+            z-index: -1;
+        }
+        
+        .circle {
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -50px;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 50px;
+            left: -50px;
+        }
+        
+        .line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+        }
+        
+        .line-1 {
+            top: 20%;
+        }
+        
+        .line-2 {
+            top: 40%;
+        }
+        
+        .line-3 {
+            top: 60%;
+        }
+        
+        .line-4 {
+            top: 80%;
+        }
+        
+        .glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            filter: blur(50px);
+            opacity: 0.5;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            p.tagline {
+                font-size: 1.25rem;
+            }
+            
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .circle-1, .circle-2 {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="design-element glow"></div>
+    <div class="design-element circle circle-1"></div>
+    <div class="design-element circle circle-2"></div>
+    <div class="design-element line line-1"></div>
+    <div class="design-element line line-2"></div>
+    <div class="design-element line line-3"></div>
+    <div class="design-element line line-4"></div>
+    
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 15 L30 15 L30 45 L20 45 Z" fill="#ffffff" />
+                <path d="M35 15 L75 15 L75 25 L35 25 Z" fill="#ffffff" />
+                <path d="M35 30 L65 30 L65 40 L35 40 Z" fill="#ffffff" />
+                <path d="M35 45 L75 45 L75 55 L35 55 Z" fill="#ffffff" />
+                <path d="M100 15 L130 15 L130 55 L120 55 L120 25 L100 25 Z" fill="#ffffff" />
+                <path d="M150 15 L140 15 L140 55 L180 55 L180 45 L150 45 Z" fill="#ffffff" />
+            </svg>
+        </div>
+        
+        <h1>Z3Connect</h1>
+        <p class="tagline">Transform any article into high-quality audio with our advanced AI. Listen to content anywhere, anytime.</p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 6H20M9 12H20M9 18H20M5 6V6.01M5 12V12.01M5 18V18.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3>Website URLs</h3>
+                <p>Simply paste any website URL and Z3Connect will convert the article content into audio with ease.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 18.5V19.5M8.2 22H15.8C16.9201 22 17.4802 22 17.908 21.782C18.2843 21.5903 18.5903 21.2843 18.782 20.908C19 20.4802 19 19.9201 19 18.8V5.2C19 4.0799 19 3.51984 18.782 3.09202C18.5903 2.71569 18.2843 2.40973 17.908 2.21799C17.4802 2 16.9201 2 15.8 2H8.2C7.0799 2 6.51984 2 6.09202 2.21799C5.71569 2.40973 5.40973 2.71569 5.21799 3.09202C5 3.51984 5 4.0799 5 5.2V18.8C5 19.9201 5 20.4802 5.21799 20.908C5.40973 21.2843 5.71569 21.5903 6.09202 21.782C6.51984 22 7.07989 22 8.2 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3>Natural Voice</h3>
+                <p>Our AI produces human-like narration with perfect intonation, emphasis, and natural-sounding speech.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12V21M12 12L18 6M12 12L6 6M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3>Instant Conversion</h3>
+                <p>Just paste a URL or upload an article to get high-quality audio in seconds. No waiting, no hassle.</p>
+            </div>
+        </div>
+        
+        <button class="cta" onclick="window.location.href='main.html'">Try Z3Connect Free</button>
+    </div>
+    
+    <script>
+        // Add subtle parallax effect to design elements
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.circle').forEach(circle => {
+                const speed = 20;
+                const xOffset = (x - 0.5) * speed;
+                const yOffset = (y - 0.5) * speed;
+                circle.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+            
+            document.querySelectorAll('.line').forEach((line, index) => {
+                const speed = 5 * (index + 1);
+                const xOffset = (x - 0.5) * speed;
+                line.style.transform = `translateX(${xOffset}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
