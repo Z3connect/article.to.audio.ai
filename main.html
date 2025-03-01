@@ -297,49 +297,71 @@
             showMessage('Processing your article. This may take up to a minute...', 'info');
             
             try {
-                const response = await fetch("https://santhoshsharuk-web-article-reader-api.hf.space/convert/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ url: url })
-                });
-                
-                // Reset loading state
-                setLoading(false);
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    showMessage(`Error: ${errorData.detail || 'Failed to process article'}`, 'error');
-                    return;
-                }
-                
-                const data = await response.json();
-                
-                // Show success message
-                showMessage('Audio generated successfully! You can now play or download it.', 'success');
-                
-                // Setup audio player and download link
-                audioPlayer.src = "https://santhoshsharuk-web-article-reader-api.hf.space/download/";
-                downloadLink.href = "https://santhoshsharuk-web-article-reader-api.hf.space/download/";
-                
-                // Show audio container with animation
-                audioContainer.classList.remove('hidden');
-                audioContainer.classList.add('fade-in');
-                
-                // Add title to audio if available in response
-                if (data.title) {
-                    downloadLink.download = `${data.title.replace(/[^\w\s]/gi, '')}.mp3`;
-                } else {
-                    downloadLink.download = "article_audio.mp3";
-                }
-                
-            } catch (error) {
-                setLoading(false);
-                showMessage('Connection error. Please check your internet connection and try again.', 'error');
-                console.error('Error:', error);
-            }
+                const CONVERT_API = import.meta.env.VITE_CONVERT_API;
+const DOWNLOAD_API = import.meta.env.VITE_DOWNLOAD_API;
+
+async function convertArticle() {
+    const url = articleUrl.value.trim();
+    
+    // Reset UI
+    audioContainer.classList.add('hidden');
+
+    if (!url) {
+        showMessage('Please enter an article URL', 'error');
+        articleUrl.focus();
+        return;
+    }
+
+    if (!isValidUrl(url)) {
+        showMessage('Please enter a valid URL (e.g., https://example.com/article)', 'error');
+        articleUrl.focus();
+        return;
+    }
+
+    setLoading(true);
+    showMessage('Processing your article. This may take up to a minute...', 'info');
+
+    try {
+        const response = await fetch(CONVERT_API, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ url: url })
+        });
+
+        setLoading(false);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            showMessage(`Error: ${errorData.detail || 'Failed to process article'}`, 'error');
+            return;
         }
+
+        const data = await response.json();
+
+        showMessage('Audio generated successfully! You can now play or download it.', 'success');
+
+        // Use environment variables for audio file
+        audioPlayer.src = DOWNLOAD_API;
+        downloadLink.href = DOWNLOAD_API;
+
+        audioContainer.classList.remove('hidden');
+        audioContainer.classList.add('fade-in');
+
+        if (data.title) {
+            downloadLink.download = `${data.title.replace(/[^\w\s]/gi, '')}.mp3`;
+        } else {
+            downloadLink.download = "article_audio.mp3";
+        }
+
+    } catch (error) {
+        setLoading(false);
+        showMessage('Connection error. Please check your internet connection and try again.', 'error');
+        console.error('Error:', error);
+    }
+}
+
         
         // Event listener for Enter key in URL input
         articleUrl.addEventListener('keypress', function(e) {
